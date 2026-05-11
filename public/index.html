@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guest Card: Tenant Pre-Screening – Deva Rentals</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page">
+    <form id="tenant-form" class="form">
+      <!-- Header -->
+      <header class="form-header">
+        <h1>Guest Card: Tenant Pre-Screening Call Sheet – Deva Rentals</h1>
+      </header>
+
+      <!-- Property Information -->
+      <section class="section section-border section-property-info">
+        <span class="section-label">Section 1</span>
+        <div class="property-info-grid">
+          <div class="field-box">
+            <label class="label">Property Address</label>
+            <input type="text" name="propertyAddress" class="input input-light-grey" placeholder="" />
+          </div>
+          <div class="field-box">
+            <label class="label">Source</label>
+            <input type="text" name="source" class="input input-light-grey" placeholder="" />
+          </div>
+          <div class="field-box">
+            <label class="label">Prospect / Showing Name</label>
+            <input type="text" name="prospect" class="input input-light-grey" placeholder="" />
+          </div>
+          <div class="field-box">
+            <label class="label">Phone</label>
+            <input type="text" name="phone" class="input input-light-grey" placeholder="" />
+          </div>
+          <div class="field-box">
+            <label class="label">Email</label>
+            <input type="email" name="email" class="input input-light-grey" placeholder="" />
+          </div>
+          <div class="field-box">
+            <label class="label">Move-in Date / Lease Term</label>
+            <input type="text" name="moveInDate" class="input input-yellow" placeholder="" />
+          </div>
+          <div class="field-box">
+            <label class="label">Showing / appointment date</label>
+            <input type="date" name="showingDate" id="showing-date" class="input input-light-grey" />
+          </div>
+          <div class="field-box">
+            <label class="label">Start time</label>
+            <input type="time" name="showingStart" id="showing-start" class="input input-light-grey" />
+          </div>
+          <div class="field-box">
+            <label class="label">End time</label>
+            <input type="time" name="showingEnd" id="showing-end" class="input input-light-grey" />
+          </div>
+          <div class="field-box field-box-full showing-calendar-actions">
+            <button type="button" id="add-google-calendar-btn" class="btn btn-calendar">
+              Add to Google Calendar
+            </button>
+            <span class="calendar-hint">Adds to Google Calendar in the background (no redirect). Date/time are interpreted in <strong>Edmonton (Alberta)</strong> when <code>CALENDAR_TIME_ZONE=America/Edmonton</code> is set on the server.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- HH (Household) Information -->
+      <section class="section section-border">
+        <span class="section-label">Section 2</span>
+        <div class="household-row">
+          <div class="household-field">
+            <label class="label">Adults</label>
+            <input type="text" name="adults" class="input input-yellow" placeholder="" />
+          </div>
+          <div class="household-field">
+            <label class="label">Kids</label>
+            <input type="text" name="kids" class="input input-yellow" placeholder="" />
+          </div>
+          <div class="household-field">
+            <label class="label">Pets</label>
+            <input type="text" name="pets" class="input input-yellow" placeholder="" />
+          </div>
+          <div class="household-field">
+            <label class="label">Total HH Income</label>
+            <input type="text" name="totalHouseholdIncome" class="input input-yellow" placeholder="" />
+          </div>
+          <div class="household-field">
+            <label class="label">Smoking</label>
+            <input type="text" name="smoking" class="input" placeholder="" />
+          </div>
+          <div class="household-field">
+            <label class="label">Vehicles</label>
+            <input type="text" name="vehicles" class="input" placeholder="" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Applicant Information -->
+      <section class="section section-border">
+        <span class="section-label">Section 3</span>
+        <table class="applicant-table">
+          <thead>
+            <tr>
+              <th>Applicant</th>
+              <th>Employer Name/Occupation</th>
+              <th>Job Duration (Year/Month)</th>
+              <th>Full Time / Part Time</th>
+              <th>Income $</th>
+              <th>Credit Score</th>
+              <th>Employment Income</th>
+              <th>Child Care Benefit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <span class="applicant-label">Main Applicant / Main Prospect</span>
+                <input type="text" name="applicant1_name" class="input" placeholder="Name" />
+              </td>
+              <td><input type="text" name="applicant1_employer" class="input input-yellow" placeholder="" /></td>
+              <td><input type="text" name="applicant1_jobDuration" class="input input-yellow" placeholder="" /></td>
+              <td><input type="text" name="applicant1_empType" class="input input-yellow" placeholder="" /></td>
+              <td><input type="text" name="applicant1_income" class="input input-yellow" placeholder="" /></td>
+              <td><input type="text" name="applicant1_creditScore" class="input input-yellow" placeholder="" /></td>
+              <td><input type="text" name="applicant1_ei" class="input" placeholder="" /></td>
+              <td><input type="text" name="applicant1_ccb" class="input" placeholder="" /></td>
+            </tr>
+            <tr>
+              <td>
+                <span class="applicant-label">Applicant 2</span>
+                <input type="text" name="applicant2_name" class="input" placeholder="Name" />
+              </td>
+              <td><input type="text" name="applicant2_employer" class="input input-yellow" placeholder="" /></td>
+              <td><input type="text" name="applicant2_jobDuration" class="input input-yellow" placeholder="" /></td>
+              <td><input type="text" name="applicant2_empType" class="input input-yellow" placeholder="" /></td>
+              <td><input type="text" name="applicant2_income" class="input input-yellow" placeholder="" /></td>
+              <td><input type="text" name="applicant2_creditScore" class="input input-yellow" placeholder="" /></td>
+              <td><input type="text" name="applicant2_ei" class="input" placeholder="" /></td>
+              <td><input type="text" name="applicant2_ccb" class="input" placeholder="" /></td>
+            </tr>
+            <tr>
+              <td>
+                <span class="applicant-label">Co-Applicant 3</span>
+                <input type="text" name="applicant3_name" class="input" placeholder="Name" />
+              </td>
+              <td><input type="text" name="applicant3_employer" class="input" placeholder="" /></td>
+              <td><input type="text" name="applicant3_jobDuration" class="input" placeholder="" /></td>
+              <td><input type="text" name="applicant3_empType" class="input" placeholder="" /></td>
+              <td><input type="text" name="applicant3_income" class="input" placeholder="" /></td>
+              <td><input type="text" name="applicant3_creditScore" class="input" placeholder="" /></td>
+              <td><input type="text" name="applicant3_ei" class="input" placeholder="" /></td>
+              <td><input type="text" name="applicant3_ccb" class="input" placeholder="" /></td>
+            </tr>
+            <tr>
+              <td>
+                <span class="applicant-label">Co-Applicant 4</span>
+                <input type="text" name="applicant4_name" class="input" placeholder="Name" />
+              </td>
+              <td><input type="text" name="applicant4_employer" class="input" placeholder="" /></td>
+              <td><input type="text" name="applicant4_jobDuration" class="input" placeholder="" /></td>
+              <td><input type="text" name="applicant4_empType" class="input" placeholder="" /></td>
+              <td><input type="text" name="applicant4_income" class="input" placeholder="" /></td>
+              <td><input type="text" name="applicant4_creditScore" class="input" placeholder="" /></td>
+              <td><input type="text" name="applicant4_ei" class="input" placeholder="" /></td>
+              <td><input type="text" name="applicant4_ccb" class="input" placeholder="" /></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <p class="between-sections-office-use">For office use only</p>
+
+      <!-- Section 4 – one border around whole section, no inner box borders -->
+      <section class="section section-border section-4-wrap">
+        <span class="section-label">Section 4</span>
+        <div class="section-four-grid">
+          <div class="field-box field-box-compact">
+            <label class="label">Reason for moving out from current place</label>
+            <textarea name="reasonForMoving" class="textarea input-yellow" rows="2" placeholder=""></textarea>
+          </div>
+          <div class="field-box field-box-compact">
+            <label class="label">Did you give proper move out notice? (Yes/No)</label>
+            <input type="text" name="moveOutNotice" class="input input-yellow" placeholder="" />
+          </div>
+          <div class="field-box field-box-full field-box-compact">
+            <label class="label">Did you pay your rent on time? (Yes/No/Any missed payments)</label>
+            <input type="text" name="rentOnTime" class="input input-yellow" placeholder="" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5 – one border around whole section, no inner box borders -->
+      <section class="section section-border section-5-wrap">
+        <span class="section-label">Section 5</span>
+        <div class="section-five-grid">
+          <div class="field-box field-box-compact">
+            <label class="label">Overall Impression / Behaviour (e.g. rude / polite / respectful) – DO NOT ASK PROSPECT</label>
+            <textarea name="overallConditionRight" class="textarea input-yellow" rows="2" placeholder=""></textarea>
+          </div>
+          <div class="field-box field-box-compact">
+            <label class="label">Other Comments – DO NOT ASK PROSPECT</label>
+            <textarea name="otherCommentsRight" class="textarea input-yellow" rows="2" placeholder=""></textarea>
+          </div>
+          <div class="field-box field-box-compact">
+            <label class="label">Pre-screened by:</label>
+            <input type="text" name="preScreenedBy" class="input input-yellow" placeholder="" />
+          </div>
+          <div class="field-box field-box-compact">
+            <label class="label">Date:</label>
+            <input type="text" name="date" class="input input-yellow" placeholder="" />
+          </div>
+          <div class="field-box field-box-compact">
+            <label class="label">Recommend to Apply (Y/N)</label>
+            <input type="text" name="recommended" class="input input-yellow" placeholder="" />
+          </div>
+          <div class="field-box field-box-compact">
+            <label class="label">Extra Notes / Preferred Showing / Anything related to booking or showing</label>
+            <textarea name="notes" class="textarea notes-area" rows="2" placeholder=""></textarea>
+          </div>
+          <div class="field-box field-box-full field-box-compact">
+            <label class="label">Employment Stability / Notes – DO NOT ASK PROSPECT</label>
+            <textarea name="employmentStability" class="textarea" rows="2" placeholder=""></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- Submit -->
+      <div class="actions">
+        <button type="submit" id="submit-btn" class="btn btn-primary">Submit Form</button>
+        <button type="button" id="clear-btn" class="btn btn-outline">Clear Form</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <script src="script.js?v=form-notify-10"></script>
+</body>
+</html>
