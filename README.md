@@ -4,7 +4,7 @@ Express server serves the form from `public/` and sends submissions with **Nodem
 
 ## Run locally
 
-1. Copy `env.example` to `.env` and fill in values.
+1. Copy `.env.example` to `.env` and fill in values.
 2. `npm install`
 3. `npm start` — open [http://localhost:3000](http://localhost:3000)
 
