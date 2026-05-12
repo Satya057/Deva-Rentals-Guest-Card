@@ -129,27 +129,73 @@ body {
   flex: 1 1 100%;
 }
 
-.showing-calendar-actions {
+.actions-calendar-col {
+  flex: 0 1 auto;
+  min-width: 0;
   display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
+  align-items: center;
 }
 
-.calendar-hint {
-  font-size: 11px;
-  color: #444;
-  line-height: 1.35;
+.actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  padding: 1rem 1rem 1.25rem;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+  border: 1px solid #c5d0e0;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(30, 58, 95, 0.08);
+}
+
+.actions-buttons-col {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 0 1 auto;
+}
+
+@media (max-width: 36rem) {
+  .actions-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .actions-buttons-col {
+    width: 100%;
+    justify-content: stretch;
+  }
+  .actions-buttons-col .btn {
+    flex: 1 1 auto;
+    text-align: center;
+  }
 }
 
 .btn-calendar {
   background: #fff;
-  color: #1a73e8;
-  border-color: #1a73e8;
-  align-self: flex-start;
+  color: #1e3a5f;
+  border: 2px solid #1e3a5f;
+  border-radius: 8px;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .btn-calendar:hover {
-  background: #e8f0fe;
+  background: #1e3a5f;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(30, 58, 95, 0.25);
+}
+
+.btn-calendar:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 .property-info-grid .field-box {
@@ -514,31 +560,29 @@ body {
   min-height: 3rem;
 }
 
-/* Buttons */
-.actions {
-  display: flex;
-  justify-content: center;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
+/* Form bottom bar: calendar (left) + submit/clear (right) */
 .btn {
-  padding: 0.5rem 1.5rem;
-  font-size: 1rem;
+  padding: 0.55rem 1.35rem;
+  font-size: 0.95rem;
   font-weight: 700;
   font-family: inherit;
   cursor: pointer;
   border: 2px solid #000;
+  border-radius: 8px;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .btn-primary {
-  background: #000;
+  background: #1e3a5f;
   color: #fff;
+  border-color: #1e3a5f;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #333;
+  background: #152a45;
+  border-color: #152a45;
+  box-shadow: 0 2px 8px rgba(30, 58, 95, 0.3);
 }
 
 .btn-primary:disabled {
@@ -547,12 +591,13 @@ body {
 }
 
 .btn-outline {
-  background: transparent;
-  color: #000;
+  background: #fff;
+  color: #1e3a5f;
+  border: 2px solid #1e3a5f;
 }
 
 .btn-outline:hover {
-  background: #f0f0f0;
+  background: #e8eef5;
 }
 
 /* Toast — short messages, multi-line ok */

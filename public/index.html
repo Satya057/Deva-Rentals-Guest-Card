@@ -54,12 +54,6 @@
             <label class="label">End time</label>
             <input type="time" name="showingEnd" id="showing-end" class="input input-light-grey" />
           </div>
-          <div class="field-box field-box-full showing-calendar-actions">
-            <button type="button" id="add-google-calendar-btn" class="btn btn-calendar">
-              Add to Google Calendar
-            </button>
-            <span class="calendar-hint">Adds to Google Calendar in the background (no redirect). Date/time are interpreted in <strong>Edmonton (Alberta)</strong> when <code>CALENDAR_TIME_ZONE=America/Edmonton</code> is set on the server.</span>
-          </div>
         </div>
       </section>
 
@@ -223,16 +217,23 @@
         </div>
       </section>
 
-      <!-- Submit -->
-      <div class="actions">
-        <button type="submit" id="submit-btn" class="btn btn-primary">Submit Form</button>
-        <button type="button" id="clear-btn" class="btn btn-outline">Clear Form</button>
+      <!-- Submit + calendar -->
+      <div class="actions-row">
+        <div class="actions-calendar-col">
+          <button type="button" id="add-google-calendar-btn" class="btn btn-calendar" title="Save showing to Google Calendar">
+            Add to Google Calendar
+          </button>
+        </div>
+        <div class="actions-buttons-col">
+          <button type="submit" id="submit-btn" class="btn btn-primary">Submit Form</button>
+          <button type="button" id="clear-btn" class="btn btn-outline">Clear Form</button>
+        </div>
       </div>
     </form>
   </div>
 
   <div id="toast" class="toast" aria-live="polite"></div>
 
-  <script src="script.js?v=form-notify-10"></script>
+  <script src="script.js?v=actions-ui-12"></script>
 </body>
 </html>

@@ -8,6 +8,25 @@ Express server serves the form from `public/` and sends submissions with **Nodem
 2. `npm install`
 3. `npm start` — open [http://localhost:3000](http://localhost:3000)
 
+## Deploy on Vercel
+
+1. Have the project on GitHub (e.g. [Deva-Rentals-Guest-Card](https://github.com/Satya057/Deva-Rentals-Guest-Card)).
+2. [vercel.com](https://vercel.com) → **Add New** → **Project** → **Import** your repo.
+3. **Framework / preset** — leave auto-detect or choose **Other**. **Root directory** = `.` (repo root).
+4. **Build** — defaults are fine. Vercel uses root `server.js` with `module.exports = app` as one serverless function for `/api/*` (no extra `vercel.json` needed).
+5. **Environment Variables** — in the project **Settings → Environment Variables**, add the same keys as `.env.example` (copy real values from your local `.env`):
+   - `GMAIL_USER`, `GMAIL_APP_PASSWORD`, `MAIL_TO`
+   - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REFRESH_TOKEN`
+   - `CALENDAR_TIME_ZONE` (e.g. `America/Edmonton`)
+   - Optional: `MAIL_BCC_SUPPRESS`, `GCAL_CREATE_SECRET`
+6. Click **Deploy**, then open the production URL and test the form.
+
+**Static files:** Files under `public/` are served from the **Vercel CDN**. On production, `express.static` in `server.js` is not used for those assets ([Vercel + Express](https://vercel.com/guides/using-express-with-vercel)); your `index.html` / CSS / JS paths stay the same.
+
+**CLI:** `npm i -g vercel` then `vercel` / `vercel dev` for preview or local serverless-style runs.
+
+Never commit `.env`; keep secrets only in Vercel env vars.
+
 ## Gmail App Password (form email)
 
 1. Google Account → **Security** → enable **2-Step Verification**.
