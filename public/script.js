@@ -10,7 +10,6 @@ const CALENDAR_API = {
 const form = document.getElementById('tenant-form');
 const submitBtn = document.getElementById('submit-btn');
 const clearBtn = document.getElementById('clear-btn');
-const addGoogleCalendarBtn = document.getElementById('add-google-calendar-btn');
 const toast = document.getElementById('toast');
 
 function sync12hWrapToHidden(wrap) {
@@ -87,17 +86,27 @@ function showToast(message, type, durationMs) {
   setTimeout(() => toast.classList.remove('show'), ms);
 }
 
-function showSubmitSuccessToast(sentTo, bccTo) {
+/** After email succeeds: one toast for email + optional Google Calendar result. */
+function showSubmitAndCalendarToast(sentTo, bccTo, calendarResult) {
   const lines = ['Form submitted', '', 'Your Guest Card has been emailed.'];
   if (sentTo) lines.push('', sentTo);
   if (bccTo && bccTo !== sentTo) lines.push('', `Copy also sent to: ${bccTo}`);
   lines.push('', 'If you do not see it, check Spam or Promotions.');
-  showToast(lines.join('\n'), 'success', 6500);
+
+  if (calendarResult.status === 'ok') {
+    lines.push('', 'Showing saved to your Google Calendar.');
+  } else if (calendarResult.status === 'skipped') {
+    lines.push('', 'Calendar: skipped (add showing date, start, and end time to save automatically).');
+  if (calendarResult.status === 'error' && calendarResult.message) {
+    lines.push('', `Calendar: ${calendarResult.message}`);
+  }
+
+  showToast(lines.join('\n'), 'success', 7800);
 }
 
-function setSubmitting(loading) {
+function setSubmitting(loading, labelWhileLoading) {
   submitBtn.disabled = loading;
-  submitBtn.textContent = loading ? 'Sending...' : 'Submit Form';
+  submitBtn.textContent = loading ? labelWhileLoading || 'Sending...' : 'Submit Form';
 }
 
 async function sendEmail(data) {
@@ -128,16 +137,22 @@ async function sendEmail(data) {
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   const data = getFormData();
-  setSubmitting(true);
-  const ok = await sendEmail(data);
-  setSubmitting(false);
-  if (ok && ok.ok) {
-    showSubmitSuccessToast(ok.sentTo, ok.bccTo);
-    form.reset();
-    syncAll12hTimes();
-  } else if (ok === false) {
-    /* error already toasted */
+  setSubmitting(true, 'Sending...');
+  const emailRes = await sendEmail(data);
+  if (!emailRes || !emailRes.ok) {
+    setSubmitting(false);
+    return;
   }
+
+  if (willPostCalendarFromData(data)) {
+    setSubmitting(true, 'Saving to calendar...');
+  }
+  const calendarRes = await trySaveCalendarFromData(data);
+  setSubmitting(false);
+
+  showSubmitAndCalendarToast(emailRes.sentTo, emailRes.bccTo, calendarRes);
+  form.reset();
+  syncAll12hTimes();
 });
 
 clearBtn.addEventListener('click', () => {
@@ -149,6 +164,13 @@ clearBtn.addEventListener('click', () => {
 function padTimeForDate(timeStr) {
   if (!timeStr) return null;
   return timeStr.length === 5 ? `${timeStr}:00` : timeStr;
+}
+
+function willPostCalendarFromData(data) {
+  const dateStr = (data.showingDate || '').trim();
+  const startT = padTimeForDate((data.showingStart || '').trim());
+  const endT = padTimeForDate((data.showingEnd || '').trim());
+  return !!(dateStr && startT && endT);
 }
 
 /** Local calendar day + N (no UTC), for end-after-midnight. */
@@ -174,20 +196,21 @@ function calendarApiUrl() {
   }
 }
 
-async function createCalendarEventFromForm() {
-  const data = getFormData();
+/**
+ * POST showing to /api/create-event (same payload as former “Add to Calendar” button).
+ * @returns {Promise<{status:'ok'}|{status:'skipped'}|{status:'error',message:string}>}
+ */
+async function trySaveCalendarFromData(data) {
   const dateStr = (data.showingDate || '').trim();
   const startT = padTimeForDate((data.showingStart || '').trim());
   const endT = padTimeForDate((data.showingEnd || '').trim());
 
   if (!dateStr || !startT || !endT) {
-    showToast('Please set showing date, start time, and end time.', 'error');
-    return;
+    return { status: 'skipped' };
   }
 
   if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
-    showToast('Invalid date. Check your entries.', 'error');
-    return;
+    return { status: 'error', message: 'Invalid date. Check your entries.' };
   }
 
   let endYmd = dateStr;
@@ -199,7 +222,6 @@ async function createCalendarEventFromForm() {
   const endDateTime = `${endYmd}T${endT}`;
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  // Calendar title: address → phone → prospect → Deva Rentals → Property showing
   const addr = (data.propertyAddress || '').trim();
   const phone = (data.phone || '').trim();
   const prospect = (data.prospect || '').trim();
@@ -225,10 +247,6 @@ async function createCalendarEventFromForm() {
     formData: data
   };
 
-  addGoogleCalendarBtn.disabled = true;
-  const prevLabel = addGoogleCalendarBtn.textContent;
-  addGoogleCalendarBtn.textContent = 'Saving to calendar…';
-
   try {
     const res = await fetch(calendarApiUrl(), {
       method: 'POST',
@@ -247,26 +265,16 @@ async function createCalendarEventFromForm() {
         json.error ||
         json.detail ||
         (res.status === 503
-          ? 'Calendar not configured on server (.env OAuth vars). App Password is only for email.'
+          ? 'Not configured on server (.env OAuth). App Password is only for email.'
           : `Request failed (${res.status})`);
-      showToast(String(msg), 'error');
-      return;
+      return { status: 'error', message: String(msg) };
     }
 
-    showToast('Saved to your Google Calendar.', 'success');
+    return { status: 'ok' };
   } catch (e) {
     console.error(e);
-    showToast('Could not reach calendar API.', 'error');
-  } finally {
-    addGoogleCalendarBtn.disabled = false;
-    addGoogleCalendarBtn.textContent = prevLabel;
+    return { status: 'error', message: 'Could not reach calendar API.' };
   }
-}
-
-if (addGoogleCalendarBtn) {
-  addGoogleCalendarBtn.addEventListener('click', () => {
-    createCalendarEventFromForm();
-  });
 }
 
 init12hTimePickers();
