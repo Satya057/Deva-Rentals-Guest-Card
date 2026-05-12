@@ -13,7 +13,65 @@ const clearBtn = document.getElementById('clear-btn');
 const addGoogleCalendarBtn = document.getElementById('add-google-calendar-btn');
 const toast = document.getElementById('toast');
 
+function sync12hWrapToHidden(wrap) {
+  const hidden = wrap.querySelector('input[type="hidden"]');
+  if (!hidden) return;
+  const hourEl = wrap.querySelector('.time-12h-hour');
+  const minEl = wrap.querySelector('.time-12h-minute');
+  const apEl = wrap.querySelector('.time-12h-ampm');
+  const h = hourEl.value;
+  const m = minEl.value;
+  const ap = apEl.value;
+  if (h === '' || m === '' || ap === '') {
+    hidden.value = '';
+    return;
+  }
+  const hNum = parseInt(h, 10);
+  const mNum = parseInt(m, 10);
+  let hour24;
+  if (ap === 'AM') {
+    hour24 = hNum === 12 ? 0 : hNum;
+  } else {
+    hour24 = hNum === 12 ? 12 : hNum + 12;
+  }
+  hidden.value = `${String(hour24).padStart(2, '0')}:${String(mNum).padStart(2, '0')}`;
+}
+
+function syncAll12hTimes() {
+  document.querySelectorAll('[data-time-sync]').forEach(sync12hWrapToHidden);
+}
+
+function init12hTimePickers() {
+  const hourOpts =
+    '<option value="">—</option>' +
+    Array.from({ length: 12 }, (_, i) => {
+      const v = i + 1;
+      return `<option value="${v}">${v}</option>`;
+    }).join('');
+  const minOpts =
+    '<option value="">—</option>' +
+    Array.from({ length: 60 }, (_, i) => `<option value="${i}">${String(i).padStart(2, '0')}</option>`).join('');
+  const apOpts = '<option value="">—</option><option value="AM">AM</option><option value="PM">PM</option>';
+
+  document.querySelectorAll('[data-time-sync]').forEach((wrap) => {
+    const hSel = wrap.querySelector('.time-12h-hour');
+    const mSel = wrap.querySelector('.time-12h-minute');
+    const aSel = wrap.querySelector('.time-12h-ampm');
+    if (hSel.dataset.inited === '1') return;
+    hSel.dataset.inited = '1';
+    hSel.innerHTML = hourOpts;
+    mSel.innerHTML = minOpts;
+    aSel.innerHTML = apOpts;
+    const update = () => sync12hWrapToHidden(wrap);
+    hSel.addEventListener('change', update);
+    mSel.addEventListener('change', update);
+    aSel.addEventListener('change', update);
+  });
+  syncAll12hTimes();
+}
+
 function getFormData() {
+  syncAll12hTimes();
   const fd = new FormData(form);
   const data = {};
   for (const [key, value] of fd.entries()) {
@@ -76,6 +134,7 @@ form.addEventListener('submit', async (e) => {
   if (ok && ok.ok) {
     showSubmitSuccessToast(ok.sentTo, ok.bccTo);
     form.reset();
+    syncAll12hTimes();
   } else if (ok === false) {
     /* error already toasted */
   }
@@ -83,6 +142,7 @@ form.addEventListener('submit', async (e) => {
 
 clearBtn.addEventListener('click', () => {
   form.reset();
+  syncAll12hTimes();
   showToast('Form cleared.', 'success');
 });
 
@@ -208,3 +268,5 @@ if (addGoogleCalendarBtn) {
     createCalendarEventFromForm();
   });
 }
+
+init12hTimePickers();

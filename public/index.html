@@ -48,11 +48,23 @@
           </div>
           <div class="field-box">
             <label class="label">Start time</label>
-            <input type="time" name="showingStart" id="showing-start" class="input input-light-grey" />
+            <div class="time-12h input input-light-grey" data-time-sync>
+              <select class="time-12h-hour" aria-label="Start hour"></select>
+              <span class="time-12h-sep">:</span>
+              <select class="time-12h-minute" aria-label="Start minute"></select>
+              <select class="time-12h-ampm" aria-label="Start AM or PM"></select>
+              <input type="hidden" name="showingStart" id="showing-start" value="" />
+            </div>
           </div>
           <div class="field-box">
             <label class="label">End time</label>
-            <input type="time" name="showingEnd" id="showing-end" class="input input-light-grey" />
+            <div class="time-12h input input-light-grey" data-time-sync>
+              <select class="time-12h-hour" aria-label="End hour"></select>
+              <span class="time-12h-sep">:</span>
+              <select class="time-12h-minute" aria-label="End minute"></select>
+              <select class="time-12h-ampm" aria-label="End AM or PM"></select>
+              <input type="hidden" name="showingEnd" id="showing-end" value="" />
+            </div>
           </div>
         </div>
       </section>
@@ -234,6 +246,6 @@
 
   <div id="toast" class="toast" aria-live="polite"></div>
 
-  <script src="script.js?v=actions-ui-12"></script>
+  <script src="script.js?v=time12h-13"></script>
 </body>
 </html>

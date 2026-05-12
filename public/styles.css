@@ -221,6 +221,44 @@ body {
   border: 1px solid #000;
 }
 
+/* 12-hour time row (Start / End) */
+.time-12h.input-light-grey {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.4rem;
+  min-height: 2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.time-12h-sep {
+  font-weight: 700;
+  user-select: none;
+}
+
+.time-12h select {
+  font: inherit;
+  font-size: 13px;
+  padding: 0.25rem 0.4rem;
+  border: 1px solid #000;
+  background: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.time-12h-hour {
+  min-width: 3rem;
+}
+
+.time-12h-minute {
+  min-width: 3.25rem;
+}
+
+.time-12h-ampm {
+  min-width: 3.5rem;
+}
+
 /* Move-in Date / Lease Term – yellow box */
 .input-yellow {
   background: #fff9c4;
