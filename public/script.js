@@ -18,6 +18,7 @@ function sync12hWrapToHidden(wrap) {
   const hourEl = wrap.querySelector('.time-12h-hour');
   const minEl = wrap.querySelector('.time-12h-minute');
   const apEl = wrap.querySelector('.time-12h-ampm');
+  if (!hourEl || !minEl || !apEl) return;
   const h = hourEl.value;
   const m = minEl.value;
   const ap = apEl.value;
@@ -56,21 +57,26 @@ function init12hTimePickers() {
     const hSel = wrap.querySelector('.time-12h-hour');
     const mSel = wrap.querySelector('.time-12h-minute');
     const aSel = wrap.querySelector('.time-12h-ampm');
-    if (hSel.dataset.inited === '1') return;
-    hSel.dataset.inited = '1';
+    if (!hSel || !mSel || !aSel) return;
+
     hSel.innerHTML = hourOpts;
     mSel.innerHTML = minOpts;
     aSel.innerHTML = apOpts;
-    const update = () => sync12hWrapToHidden(wrap);
-    hSel.addEventListener('change', update);
-    mSel.addEventListener('change', update);
-    aSel.addEventListener('change', update);
+
+    if (wrap.dataset.time12hListeners !== '1') {
+      wrap.dataset.time12hListeners = '1';
+      const update = () => sync12hWrapToHidden(wrap);
+      hSel.addEventListener('change', update);
+      mSel.addEventListener('change', update);
+      aSel.addEventListener('change', update);
+    }
   });
   syncAll12hTimes();
 }
 
 function getFormData() {
   syncAll12hTimes();
+  if (!form) return {};
   const fd = new FormData(form);
   const data = {};
   for (const [key, value] of fd.entries()) {
@@ -80,6 +86,7 @@ function getFormData() {
 }
 
 function showToast(message, type, durationMs) {
+  if (!toast) return;
   toast.textContent = message;
   toast.className = 'toast show ' + (type === 'error' ? 'error' : 'success');
   const ms = durationMs != null ? durationMs : type === 'error' ? 5200 : 4200;
@@ -97,7 +104,7 @@ function showSubmitAndCalendarToast(sentTo, bccTo, calendarResult) {
     lines.push('', 'Showing saved to your Google Calendar.');
   } else if (calendarResult.status === 'skipped') {
     lines.push('', 'Calendar: skipped (add showing date, start, and end time to save automatically).');
-  if (calendarResult.status === 'error' && calendarResult.message) {
+  } else if (calendarResult.status === 'error' && calendarResult.message) {
     lines.push('', `Calendar: ${calendarResult.message}`);
   }
 
@@ -105,6 +112,7 @@ function showSubmitAndCalendarToast(sentTo, bccTo, calendarResult) {
 }
 
 function setSubmitting(loading, labelWhileLoading) {
+  if (!submitBtn) return;
   submitBtn.disabled = loading;
   submitBtn.textContent = loading ? labelWhileLoading || 'Sending...' : 'Submit Form';
 }
@@ -134,8 +142,9 @@ async function sendEmail(data) {
   }
 }
 
-form.addEventListener('submit', async (e) => {
+form?.addEventListener('submit', async (e) => {
   e.preventDefault();
+  if (!form) return;
   const data = getFormData();
   setSubmitting(true, 'Sending...');
   const emailRes = await sendEmail(data);
@@ -153,11 +162,14 @@ form.addEventListener('submit', async (e) => {
   showSubmitAndCalendarToast(emailRes.sentTo, emailRes.bccTo, calendarRes);
   form.reset();
   syncAll12hTimes();
+  init12hTimePickers();
 });
 
-clearBtn.addEventListener('click', () => {
+clearBtn?.addEventListener('click', () => {
+  if (!form) return;
   form.reset();
   syncAll12hTimes();
+  init12hTimePickers();
   showToast('Form cleared.', 'success');
 });
 

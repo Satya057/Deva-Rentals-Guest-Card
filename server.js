@@ -168,9 +168,32 @@ app.post('/api/submit-form', async (req, res) => {
 
     const mailToNorm = String(mailTo).trim().toLowerCase();
     const userNorm = String(user).trim().toLowerCase();
-    /** When sending to another inbox, BCC the SMTP account so you always get a copy (Spam still check). */
-    const bcc =
-      mailToNorm !== userNorm && process.env.MAIL_BCC_SUPPRESS !== '1' ? user : undefined;
+
+    /** Comma- or semicolon-separated extra inboxes (always BCC’d when valid, deduped, never duplicates `to`). */
+    const extraBccRaw = process.env.MAIL_BCC_EXTRA || '';
+    const extraBccParts = String(extraBccRaw)
+      .split(/[,;]+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    const bccNormSeen = new Set();
+    const bccList = [];
+    const pushBcc = (addr) => {
+      const a = String(addr).trim();
+      const n = a.toLowerCase();
+      if (!n || n === mailToNorm || bccNormSeen.has(n)) return;
+      bccNormSeen.add(n);
+      bccList.push(a);
+    };
+
+    if (mailToNorm !== userNorm && process.env.MAIL_BCC_SUPPRESS !== '1') {
+      pushBcc(user);
+    }
+    for (const addr of extraBccParts) {
+      pushBcc(addr);
+    }
+
+    const bcc = bccList.length ? (bccList.length === 1 ? bccList[0] : bccList) : undefined;
 
     const info = await transporter.sendMail({
       from: `"Guest Card – Deva Rentals" <${user}>`,
@@ -184,14 +207,14 @@ app.post('/api/submit-form', async (req, res) => {
 
     console.log('submit-form: email accepted by Gmail', {
       to: mailTo,
-      bcc: bcc || '(none)',
+      bcc: bccList.length ? bccList.join(', ') : '(none)',
       messageId: info.messageId
     });
 
     res.json({
       ok: true,
       sentTo: mailTo,
-      bccTo: bcc || undefined,
+      bccTo: bccList.length ? bccList.join(', ') : undefined,
       messageId: info.messageId || undefined
     });
   } catch (e) {
