@@ -196,6 +196,19 @@ body {
   border: 1px solid #000;
 }
 
+/* TEMP: off showing date/time fields (see index.html) */
+.field-box--off .label {
+  color: #666;
+}
+
+.field-box--off .input:disabled,
+.field-box--off .time-12h select:disabled {
+  background: #d0d0d0;
+  color: #666;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
 /* 12-hour time row (Start / End) */
 .time-12h.input-light-grey {
   display: flex;

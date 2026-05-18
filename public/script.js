@@ -2,6 +2,9 @@
  * Form posts to this same origin (Node server): /api/submit-form
  * Calendar: /api/create-event (needs OAuth vars in server .env — App Password does not work for Calendar)
  */
+/** Set true to save showings to Google Calendar after email (needs OAuth in server .env). */
+const CALENDAR_ENABLED = false;
+
 const CALENDAR_API = {
   path: '/api/create-event',
   gcalSecret: ''
@@ -100,7 +103,9 @@ function showSubmitAndCalendarToast(sentTo, bccTo, calendarResult) {
   if (bccTo && bccTo !== sentTo) lines.push('', `Copy also sent to: ${bccTo}`);
   lines.push('', 'If you do not see it, check Spam or Promotions.');
 
-  if (calendarResult.status === 'ok') {
+  if (calendarResult.status === 'disabled') {
+    /* email-only mode */
+  } else if (calendarResult.status === 'ok') {
     lines.push('', 'Showing saved to your Google Calendar.');
   } else if (calendarResult.status === 'skipped') {
     lines.push('', 'Calendar: skipped (add showing date, start, and end time to save automatically).');
@@ -153,10 +158,13 @@ form?.addEventListener('submit', async (e) => {
     return;
   }
 
-  if (willPostCalendarFromData(data)) {
-    setSubmitting(true, 'Saving to calendar...');
+  let calendarRes = { status: 'disabled' };
+  if (CALENDAR_ENABLED) {
+    if (willPostCalendarFromData(data)) {
+      setSubmitting(true, 'Saving to calendar...');
+    }
+    calendarRes = await trySaveCalendarFromData(data);
   }
-  const calendarRes = await trySaveCalendarFromData(data);
   setSubmitting(false);
 
   showSubmitAndCalendarToast(emailRes.sentTo, emailRes.bccTo, calendarRes);
